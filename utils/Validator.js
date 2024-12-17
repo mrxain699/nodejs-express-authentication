@@ -9,6 +9,9 @@ const userSchema = Joi.object({
   role: Joi.string().valid("admin", "user").required(),
 });
 
+const passwordSchema = Joi.string().min(8).max(16).required();
+
 module.exports = {
   userSchema,
+  passwordSchema,
 };

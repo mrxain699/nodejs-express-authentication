@@ -24,4 +24,20 @@ function generate_jwt_token(user_id, role) {
   return token;
 }
 
-module.exports = { hash_password, match_hashed_password, generate_jwt_token };
+function decode_jwt_token(token) {
+  const decoded = jwt.decode(token, { complete: true });
+  return decoded;
+}
+
+function verify_jwt_token(token) {
+  const data = jwt.verify(token, process.env.JWT_SECRET);
+  return data;
+}
+
+module.exports = {
+  hash_password,
+  match_hashed_password,
+  generate_jwt_token,
+  decode_jwt_token,
+  verify_jwt_token,
+};

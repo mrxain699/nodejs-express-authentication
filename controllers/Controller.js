@@ -19,7 +19,7 @@ class Controller {
   async _update(id, data) {
     try {
       if (typeof data === "object" && Object.keys(data).length > 0 && id) {
-        const update_entry = await this._model.UpdateOne(
+        const update_entry = await this._model.updateOne(
           { _id: id },
           {
             $set: data,
@@ -61,12 +61,10 @@ class Controller {
     }
   }
 
-  async _find_by_query(query) {
+  async _find_by_query(query, excluded_fields = "-createdAt -updatedAt -__v") {
     try {
       if (query) {
-        const entry = await this._model
-          .findOne(query)
-          .select("-createdAt -updatedAt -__v");
+        const entry = await this._model.findOne(query).select(excluded_fields);
         return entry;
       } else {
         throw new Error("No data provided");
