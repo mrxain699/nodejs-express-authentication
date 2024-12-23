@@ -6,7 +6,7 @@ const {
   generate_jwt_token,
 } = require("../utils/HelperFunctions");
 const { successResponse, errorResponse } = require("../utils/ResponseHandler");
-const { passwordSchema } = require("../utils/Validator");
+const { userSchema } = require("../utils/Validator");
 class AuthController extends Controller {
   constructor() {
     super(Auth);
@@ -65,6 +65,7 @@ class AuthController extends Controller {
         user.password
       );
       if (isPasswordValid) {
+        const passwordSchema = userSchema.extract("password");
         const { error } = passwordSchema.validate(new_password);
         if (error) {
           errorResponse(res, error.message, { error: error.message });
