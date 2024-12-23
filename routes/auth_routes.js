@@ -19,4 +19,6 @@ router
   .route("/auth/change_password")
   .post(auhtorized_middleware, (req, res) => auth.change_password(req, res));
 
+router.route("/auth/reset_password").post((req, res) => auth.logout(req, res));
+
 module.exports = router;

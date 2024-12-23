@@ -89,8 +89,6 @@ class AuthController extends Controller {
       }
     }
   }
-
-  async reset_password(req, res) {}
 }
 
 module.exports = new AuthController();
