@@ -19,6 +19,8 @@ router
   .route("/auth/change_password")
   .post(auhtorized_middleware, (req, res) => auth.change_password(req, res));
 
-router.route("/auth/reset_password").post((req, res) => auth.logout(req, res));
+router
+  .route("/auth/send_mail")
+  .post((req, res) => auth.send_reset_pasword_mail(req, res));
 
 module.exports = router;

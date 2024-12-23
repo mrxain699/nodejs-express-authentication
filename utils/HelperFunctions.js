@@ -1,15 +1,15 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-// const nodemailer = require("nodemailer");
-// const transporter = nodemailer.createTransport({
-//   host: "smtp.gmail.com",
-//   port: 587,
-//   secure: false,
-//   auth: {
-//     user: process.env.APP_MAIL,
-//     pass: process.env.APP_PASSWORD,
-//   },
-// });
+const nodemailer = require("nodemailer");
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.APP_MAIL,
+    pass: process.env.APP_PASSWORD,
+  },
+});
 
 async function hash_password(password) {
   const salt = bcrypt.genSaltSync(10);
@@ -45,16 +45,16 @@ function verify_jwt_token(token) {
   return data;
 }
 
-// async function send_mail(link, rev_address) {
-//   const info = await transporter.sendMail({
-//     from: process.env.APP_MAIL,
-//     to: rev_address,
-//     subject: "Reset Password Link",
-//     text: "Here is your reset password Button. Click on the Reset Password button.",
-//     html: `<a href="${link}" target="_blank">Reset Password</a>`,
-//   });
-//   return info.messageId;
-// }
+async function send_mail(link, rev_address) {
+  const info = await transporter.sendMail({
+    from: process.env.APP_MAIL,
+    to: rev_address,
+    subject: "Reset Password Link",
+    text: "Here is your reset password Button. Click on the Reset Password button.",
+    html: `<a href="${link}" target="_blank">Reset Password</a>`,
+  });
+  return info.messageId;
+}
 
 module.exports = {
   hash_password,
@@ -62,5 +62,5 @@ module.exports = {
   generate_jwt_token,
   decode_jwt_token,
   verify_jwt_token,
-  // send_mail,
+  send_mail,
 };
