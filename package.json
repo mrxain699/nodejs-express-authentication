@@ -4,7 +4,7 @@
   "description": "Web Authentication System with JWT",
   "main": "server.js",
   "scripts": {
-    "test": "nodemon server.js",
+    "dev": "nodemon server.js",
     "start": "nodemon server.js"
   },
   "author": "Toji",

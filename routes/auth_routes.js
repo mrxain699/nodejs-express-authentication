@@ -4,6 +4,7 @@ const {
   register_middleware,
   authenticate_middleware,
   auhtorized_middleware,
+  reset_password_middleware,
 } = require("../middlewares/auth_middlewares");
 const router = express.Router();
 
@@ -22,5 +23,9 @@ router
 router
   .route("/auth/send_mail")
   .post((req, res) => auth.send_reset_pasword_mail(req, res));
+
+router
+  .route("/auth/reset_password/:token")
+  .post(reset_password_middleware, (req, res) => auth.reset_password(req, res));
 
 module.exports = router;

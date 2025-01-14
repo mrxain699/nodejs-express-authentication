@@ -7,6 +7,7 @@ const {
   decode_jwt_token,
   verify_jwt_token,
 } = require("../utils/HelperFunctions");
+const Token = require("../models/TokenModel");
 const auth = new Controller(Auth);
 const register_middleware = async (req, res, next) => {
   try {
@@ -98,8 +99,42 @@ const auhtorized_middleware = async (req, res, next) => {
   }
 };
 
+const reset_password_middleware = async (req, res, next) => {
+  const { token } = req.params;
+  if (token) {
+    try {
+      const tokenData = await Token.findOne({ token: token });
+      if (tokenData) {
+        const { user_id } = verify_jwt_token(tokenData.token);
+        if (user_id === tokenData.user_id.toString()) {
+          const user = await auth._find_by_query({ _id: user_id });
+          if (user) {
+            req.user = user;
+            next();
+          } else {
+            errorResponse(res, "Invalid Token", {
+              error: "Invalid Token",
+            });
+          }
+        }
+      } else {
+        errorResponse(res, "Invalid Token", {
+          error: "Invalid Token",
+        });
+      }
+    } catch (error) {
+      errorResponse(res, error.message, { error: error.message });
+    }
+  } else {
+    errorResponse(res, "Token is missing", {
+      error: "Token is missing",
+    });
+  }
+};
+
 module.exports = {
   register_middleware,
   authenticate_middleware,
   auhtorized_middleware,
+  reset_password_middleware,
 };

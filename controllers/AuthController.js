@@ -93,7 +93,45 @@ class AuthController extends Controller {
     }
   }
 
-  async reset_password(req, res) {}
+  async reset_password(req, res) {
+    const { password, confirm_password } = req.body;
+    if (req.user) {
+      if (password && confirm_password) {
+        if (password === confirm_password) {
+          const passwordSchema = userSchema.extract("password");
+          const { error } = passwordSchema.validate(password);
+          if (error) {
+            errorResponse(res, error.message, { error: error.message });
+          } else {
+            const hashed_password = await hash_password(password);
+            const updated_user = await this._update(
+              { _id: req.user._id },
+              { password: hashed_password }
+            );
+            if (updated_user) {
+              successResponse(res, "Password reset successfully");
+            } else {
+              errorResponse(res, "Password reset failed", {
+                error: "Password rteset failed",
+              });
+            }
+          }
+        } else {
+          errorResponse(res, "Password Validation Error", {
+            error: "Password and confirm password must be same",
+          });
+        }
+      } else {
+        errorResponse(res, "Password Validation Error", {
+          error: "Password and confirm password are required",
+        });
+      }
+    } else {
+      errorResponse(res, "Authorization failed", {
+        error: "User not found",
+      });
+    }
+  }
 
   async send_reset_pasword_mail(req, res) {
     const { email } = req.body;
@@ -110,7 +148,7 @@ class AuthController extends Controller {
           if (user) {
             const isToken = generate_jwt_token(user._id, user.role);
             if (isToken) {
-              const reset_password_url = `http://localhost:${process.env.PORT}/auth/reset_password/${isToken}`;
+              const reset_password_url = `http://localhost:${process.env.PORT}/api/v1/auth/reset_password/${isToken}`;
               const response = await send_mail(reset_password_url, user.email);
               if (response) {
                 const token = await new Token({

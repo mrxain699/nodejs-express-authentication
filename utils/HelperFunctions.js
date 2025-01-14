@@ -1,14 +1,17 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+require("dotenv").config();
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   secure: false,
   auth: {
-    user: process.env.APP_MAIL,
-    pass: process.env.APP_PASSWORD,
+    user: `${process.env.APP_MAIL?.trim()}`,
+    pass: `${process.env.APP_PASSWORD?.trim()}`,
   },
+  debug: true,
+  logger: true,
 });
 
 async function hash_password(password) {
@@ -47,7 +50,7 @@ function verify_jwt_token(token) {
 
 async function send_mail(link, rev_address) {
   const info = await transporter.sendMail({
-    from: process.env.APP_MAIL,
+    from: `${process.env.APP_MAIL?.trim()}`,
     to: rev_address,
     subject: "Reset Password Link",
     text: "Here is your reset password Button. Click on the Reset Password button.",
